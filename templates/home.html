@@ -110,7 +110,7 @@
 <body>
     <div class="container">
         <!-- Logo Section -->
-        <img src="path/to/your/logo.png" alt="Recipe Finder Logo" class="logo">
+         <img src="{{ url_for('static', filename='LOGO.png') }}" alt="Recipe Finder Logo" class="logo">
         
         <h1>Welcome to Recipe Genie</h1>
         <form action="/search" method="post">
