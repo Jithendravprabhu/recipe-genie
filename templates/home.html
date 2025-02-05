@@ -34,9 +34,9 @@
             max-width: 600px;
         }
 
-        /* Styling for the logo */
+        /* Logo styling */
         .logo {
-            width: 150px;  /* Set logo width */
+            width: 150px;
             margin-bottom: 20px;
         }
 
@@ -65,7 +65,7 @@
             outline: none;
         }
 
-        /* Styling for the submit button */
+        /* Button Styling */
         button {
             padding: 15px 30px;
             font-size: 18px;
@@ -105,20 +105,52 @@
         body {
             background-color: #f0f8ff;
         }
+
+        /* Navigation Bar Styling */
+        .navbar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .navbar a {
+            margin-left: 15px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        {% if current_user.is_authenticated %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+        {% endif %}
+    </div>
+
     <div class="container">
         <!-- Logo Section -->
-         <img src="{{ url_for('static', filename='LOGO.png') }}" alt="Recipe Finder Logo" class="logo">
+        <img src="{{ url_for('static', filename='LOGO.png') }}" alt="Recipe Finder Logo" class="logo">
         
         <h1>Welcome to Recipe Genie</h1>
+
+        <!-- Recipe Search Form -->
         <form action="/search" method="post">
-            <!-- Added label for accessibility -->
             <label for="query">Search for recipes:</label>
             <input type="text" id="query" name="query" placeholder="Search for your favorite recipes..." required>
             <button type="submit">Find Recipes</button>
         </form>
     </div>
+
 </body>
 </html>
