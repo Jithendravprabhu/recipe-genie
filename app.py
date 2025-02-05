@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 import requests
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
 
-SPOONACULAR_API_KEY = 'c5536c5232b34c3fbdcc8f8524b347c4'
+# TheMealDB API Base URL
+API_URL = "https://www.themealdb.com/api/json/v1/1/"
 
 @app.route('/')
 def home():
@@ -12,21 +13,25 @@ def home():
 
 @app.route('/search', methods=['POST'])
 def search():
-    query = request.form.get('query')
-    return redirect(url_for('results', query=query))
+    query = request.form.get('query')  # Search term (dish name)
+    ingredients = request.form.get('ingredients')  # Ingredients input by user
+    return get_recipes(query, ingredients)
 
-@app.route('/results/<query>')
-def results(query):
-    url = f'https://api.spoonacular.com/recipes/complexSearch?query={query}&apiKey={SPOONACULAR_API_KEY}'
+def get_recipes(query, ingredients):
+    # Construct search query
+    search_query = f"{query} {ingredients}" if query and ingredients else query or ingredients
+    if not search_query:
+        return render_template('search_results.html', recipes=[], message="Please provide a dish name or ingredients.")
+
+    # Call TheMealDB API to search for meals
+    url = f'{API_URL}search.php?s={search_query}'
     response = requests.get(url).json()
-    results = response.get('results', [])
-    return render_template('search_results.html', query=query, results=results)
-
-@app.route('/recipe/<int:recipe_id>')
-def recipe_details(recipe_id):
-    url = f'https://api.spoonacular.com/recipes/{recipe_id}/information?apiKey={SPOONACULAR_API_KEY}'
-    recipe = requests.get(url).json()
-    return render_template('recipe_details.html', recipe=recipe)
+    recipes = response.get('meals', [])
+    
+    if not recipes:
+        return render_template('search_results.html', recipes=[], message="No meals found with your search.")
+    
+    return render_template('search_results.html', recipes=recipes)
 
 if __name__ == '__main__':
     app.run(debug=True)
