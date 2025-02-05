@@ -5,17 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Finder</title>
     <style>
+        /* Import a custom Google font */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
         /* Overall page styling */
         body {
             background-color: #f0f8ff;  /* Light background color */
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif; /* Custom font */
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-image: url('https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdhbGxwYXBlciUyMGZvb2R8ZW58MHx8MHx8fDA%3D'); /* Background image */
+            background-image: url('https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdhbGxwYXBlciUyMGZvb2R8ZW58MHx8MHx8fDA%3D');
             background-size: cover;
             background-position: center;
             color: #fff;
@@ -57,6 +60,11 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
+        input[type="text"]:focus {
+            border: 2px solid #ff6347;
+            outline: none;
+        }
+
         /* Styling for the submit button */
         button {
             padding: 15px 30px;
@@ -74,6 +82,10 @@
             background-color: #ff4500; /* Darker shade on hover */
         }
 
+        button:active {
+            transform: scale(0.98); /* Slightly shrink the button on click */
+        }
+
         /* Placeholder text */
         input[type="text"]::placeholder {
             color: #888;
@@ -88,17 +100,24 @@
                 font-size: 2rem;
             }
         }
+
+        /* Fallback background color for slow networks or image blocking */
+        body {
+            background-color: #f0f8ff;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Logo Section -->
-        <img src="{{ url_for('static', filename='LOGO.png') }}" alt="Recipe Finder Logo" class="logo">
+        <img src="path/to/your/logo.png" alt="Recipe Finder Logo" class="logo">
         
-        <h1>Welcome to Recipe genie</h1>
-        <form action="{{ url_for('search') }}" method="post">
-            <input type="text" name="query" placeholder="Search for your favorite recipes...">
-            <button type="submit">Search</button>
+        <h1>Welcome to Recipe Genie</h1>
+        <form action="/search" method="post">
+            <!-- Added label for accessibility -->
+            <label for="query">Search for recipes:</label>
+            <input type="text" id="query" name="query" placeholder="Search for your favorite recipes..." required>
+            <button type="submit">Find Recipes</button>
         </form>
     </div>
 </body>
