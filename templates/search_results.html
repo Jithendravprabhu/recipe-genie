@@ -1,18 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Search Results</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Results</title>
 </head>
 <body>
-    <h1>Results for "{{ query }}"</h1>
-    <ul>
-        {% for result in results %}
-            <li>
-                <a href="{{ url_for('recipe_details', recipe_id=result['id']) }}">
-                    {{ result['title'] }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+    <h1>Search Results</h1>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% else %}
+        <ul>
+            {% for meal in recipes %}
+                <li>
+                    <h3>{{ meal.strMeal }}</h3>
+                    <img src="{{ meal.strMealThumb }}" alt="{{ meal.strMeal }}" width="200"><br>
+                    <a href="{{ meal.strSource }}" target="_blank">View Recipe</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <br>
+    <a href="/">Search Again</a>
 </body>
 </html>
