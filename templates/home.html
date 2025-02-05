@@ -1,156 +1,17 @@
+<!-- home.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe Finder</title>
-    <style>
-        /* Import a custom Google font */
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
-
-        /* Overall page styling */
-        body {
-            background-color: #f0f8ff;  /* Light background color */
-            font-family: 'Roboto', sans-serif; /* Custom font */
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-image: url('https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdhbGxwYXBlciUyMGZvb2R8ZW58MHx8MHx8fDA%3D');
-            background-size: cover;
-            background-position: center;
-            color: #fff;
-        }
-
-        /* Container for content */
-        .container {
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
-            padding: 30px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        /* Logo styling */
-        .logo {
-            width: 150px;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Text shadow for better readability */
-        }
-
-        /* Styling for the input field */
-        input[type="text"] {
-            width: 80%;
-            padding: 15px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            background-color: #fff;
-            color: #333;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        input[type="text"]:focus {
-            border: 2px solid #ff6347;
-            outline: none;
-        }
-
-        /* Button Styling */
-        button {
-            padding: 15px 30px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            background-color: #ff6347; /* Tomato color */
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        button:hover {
-            background-color: #ff4500; /* Darker shade on hover */
-        }
-
-        button:active {
-            transform: scale(0.98); /* Slightly shrink the button on click */
-        }
-
-        /* Placeholder text */
-        input[type="text"]::placeholder {
-            color: #888;
-        }
-
-        /* Responsive design for mobile */
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-        }
-
-        /* Fallback background color for slow networks or image blocking */
-        body {
-            background-color: #f0f8ff;
-        }
-
-        /* Navigation Bar Styling */
-        .navbar {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .navbar a {
-            margin-left: 15px;
-            color: #fff;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .navbar a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>Recipe Genie</title>
 </head>
 <body>
-
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        {% if current_user.is_authenticated %}
-            <a href="/logout">Logout</a>
-        {% else %}
-            <a href="/login">Login</a>
-        {% endif %}
-    </div>
-
-    <div class="container">
-        <!-- Logo Section -->
-        <img src="{{ url_for('static', filename='LOGO.png') }}" alt="Recipe Finder Logo" class="logo">
-        
-        <h1>Welcome to Recipe Genie</h1>
-
-        <!-- Recipe Search Form -->
-        <form action="/search" method="post">
-            <label for="query">Search for recipes:</label>
-            <input type="text" id="query" name="query" placeholder="Search for your favorite recipes..." required>
-            <button type="submit">Find Recipes</button>
-        </form>
-    </div>
-
+    {% if current_user.is_authenticated %}
+        <p>Welcome, {{ current_user.id }}!</p>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+        <p>Please <a href="{{ url_for('login') }}">login</a> to continue.</p>
+    {% endif %}
 </body>
 </html>
