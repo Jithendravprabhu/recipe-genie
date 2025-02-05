@@ -15,14 +15,17 @@ def home():
 def search():
     query = request.form.get('query')  # Search term (dish name)
     ingredients = request.form.get('ingredients')  # Ingredients input by user
+    
+    # Check if the query or ingredients are provided
+    if not query and not ingredients:
+        return render_template('search_results.html', recipes=[], message="Please provide a dish name or ingredients.")
+    
     return get_recipes(query, ingredients)
 
 def get_recipes(query, ingredients):
-    # Ensure no empty or invalid search queries
+    # Construct search query (dish name + ingredients)
     search_query = f"{query} {ingredients}".strip() if query and ingredients else query or ingredients
-    if not search_query:
-        return render_template('search_results.html', recipes=[], message="Please provide a dish name or ingredients.")
-
+    
     try:
         # Call TheMealDB API to search for meals
         url = f'{API_URL}search.php?s={search_query}'
