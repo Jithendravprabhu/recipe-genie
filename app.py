@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import psycopg2
 import os
+import bcrypt
 
 app = Flask(__name__)
 
@@ -9,8 +10,12 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Function to get a database connection
 def get_db_connection():
-    conn = psycopg2.connect(DATABASE_URL)  # Connect using the DATABASE_URL
-    return conn
+    try:
+        conn = psycopg2.connect(DATABASE_URL)  # Connect using the DATABASE_URL
+        return conn
+    except Exception as e:
+        print(f"Error connecting to database: {e}")
+        return None
 
 @app.route('/')
 def home():
@@ -27,13 +32,19 @@ def get_recipes(query, ingredients):
     if not search_query:
         return render_template('search_results.html', recipes=[], message="Please provide a dish name or ingredients.")
     
-    # API integration or database query logic to fetch recipes can go here
-    # Example: using an external API for recipe search
-    # For now, let's use a mock response for demonstration
+    # Get recipes from the database based on user input
+    conn = get_db_connection()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM recipes WHERE name LIKE %s OR ingredients LIKE %s", (f"%{search_query}%", f"%{search_query}%"))
+        recipes = cursor.fetchall()
+        conn.close()
 
-    recipes = [{"name": "Pasta", "description": "Delicious pasta with tomato sauce."}]  # Sample data
-
-    return render_template('search_results.html', recipes=recipes)
+        if not recipes:
+            return render_template('search_results.html', recipes=[], message="No meals found.")
+        return render_template('search_results.html', recipes=recipes)
+    else:
+        return render_template('search_results.html', recipes=[], message="Error: Could not connect to the database.")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -43,15 +54,18 @@ def login():
         
         # Query the database for matching username and password
         conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
-        user = cursor.fetchone()
-        conn.close()
+        if conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+            user = cursor.fetchone()
+            conn.close()
 
-        if user:
-            return redirect(url_for('home'))  # Redirect to home page if login successful
+            if user and bcrypt.checkpw(password.encode('utf-8'), user[1].encode('utf-8')):  # user[1] should be the hashed password
+                return redirect(url_for('home'))  # Redirect to home page if login successful
+            else:
+                return render_template('login.html', message="Invalid username or password.")
         else:
-            return render_template('login.html', message="Invalid username or password.")
+            return render_template('login.html', message="Error: Could not connect to the database.")
 
     return render_template('login.html')
 
